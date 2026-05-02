@@ -1,5 +1,5 @@
 cask "octobell" do
-  version "0.1.0" # x-release-please-version
+  version "0.2.0" # x-release-please-version
   sha256 :no_check # Replace with the actual SHA256 of the DMG after building
 
   url "https://github.com/zigastrgar/octobell/releases/download/v#{version}/OctoBell-#{version}.dmg"
