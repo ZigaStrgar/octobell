@@ -6,6 +6,12 @@ struct ProfileTabView: View {
     @ObservedObject private var settings = SettingsManager.shared
     @ObservedObject private var notifications = NotificationManager.shared
     var onLogout: () -> Void
+    
+    private var appVersion: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0.0"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "0"
+        return "Version: \(version) (\(build))"
+    }
 
     var body: some View {
         ScrollView {
@@ -206,6 +212,38 @@ struct ProfileTabView: View {
                     .cornerRadius(12)
                     .padding(.horizontal, 16)
                 }
+                
+                // Developer Options
+                if settings.isDeveloperModeEnabled {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Developer Options")
+                            .font(.headline)
+                            .foregroundColor(AppTheme.onSurface)
+                            .padding(.horizontal, 16)
+
+                        VStack(spacing: 0) {
+                            HStack {
+                                Text("Enable Debug Logs")
+                                Spacer()
+                                Toggle("", isOn: Binding(
+                                    get: { settings.isDebugLogsEnabled },
+                                    set: { val in DispatchQueue.main.async { settings.isDebugLogsEnabled = val } }
+                                ))
+                                .toggleStyle(.switch)
+                                .controlSize(.mini)
+                                .tint(AppTheme.primary)
+                                .accessibilityLabel("Enable Debug Logs")
+                                .onHover { hovering in
+                                    if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                                }
+                            }
+                            .padding()
+                        }
+                        .background(AppTheme.surfaceContainerLowest)
+                        .cornerRadius(12)
+                        .padding(.horizontal, 16)
+                    }
+                }
 
                 // Logout
                 Button(action: onLogout) {
@@ -226,8 +264,22 @@ struct ProfileTabView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
 
-                Spacer(minLength: 20)
+                Text(appVersion)
+                    .font(.system(size: 11))
+                    .foregroundColor(AppTheme.onSurfaceVariant)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 4)
+                    .padding(.bottom, 20)
             }
         }
+        .background(
+            Button("") {
+                DispatchQueue.main.async {
+                    settings.isDeveloperModeEnabled.toggle()
+                }
+            }
+            .keyboardShortcut("d", modifiers: [.option])
+            .hidden()
+        )
     }
 }

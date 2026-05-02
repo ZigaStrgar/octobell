@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/ZigaStrgar/octobell/compare/v0.2.0...v0.3.0) (2026-05-02)
+
+
+### Features
+
+* Add developer mode toggle and debug logging ([#35](https://github.com/ZigaStrgar/octobell/issues/35)) ([3dc59f4](https://github.com/ZigaStrgar/octobell/commit/3dc59f4d444a123ca22d48c383b0ab2b861c6675))
+* add version and build info to profile tab ([#37](https://github.com/ZigaStrgar/octobell/issues/37)) ([e576a3e](https://github.com/ZigaStrgar/octobell/commit/e576a3e5ceeb595ae4f8cf4bc8691f4083710471))
+
 ## [0.2.0](https://github.com/ZigaStrgar/octobell/compare/v0.1.0...v0.2.0) (2026-05-02)
 
 

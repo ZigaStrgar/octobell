@@ -21,6 +21,14 @@ class SettingsManager: ObservableObject {
         didSet { UserDefaults.standard.set(notifyOnFailure, forKey: "Core_NotifyFailure") }
     }
     
+    @Published var isDeveloperModeEnabled: Bool {
+        didSet { UserDefaults.standard.set(isDeveloperModeEnabled, forKey: "Core_DeveloperMode") }
+    }
+    
+    @Published var isDebugLogsEnabled: Bool {
+        didSet { UserDefaults.standard.set(isDebugLogsEnabled, forKey: "Core_DebugLogsEnabled") }
+    }
+    
     private init() {
         let savedInterval = UserDefaults.standard.integer(forKey: "Core_RefreshIntervalMinutes")
         self.refreshIntervalMinutes = savedInterval == 0 ? 5 : savedInterval
@@ -39,5 +47,8 @@ class SettingsManager: ObservableObject {
         } else {
             self.notifyOnFailure = UserDefaults.standard.bool(forKey: "Core_NotifyFailure")
         }
+        
+        self.isDeveloperModeEnabled = UserDefaults.standard.bool(forKey: "Core_DeveloperMode")
+        self.isDebugLogsEnabled = UserDefaults.standard.bool(forKey: "Core_DebugLogsEnabled")
     }
 }

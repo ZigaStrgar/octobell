@@ -30,9 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         
         // Request notification permissions
         center.requestAuthorization(options: [.alert, .sound]) { granted, _ in
-            #if DEBUG
-            print("Notifications granted: \(granted)")
-            #endif
+            AppLogger.log("Notifications granted: \(granted)")
         }
         
         // 1. Create the popover
@@ -164,32 +162,22 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
                                             didReceive response: UNNotificationResponse,
                                             withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
-        #if DEBUG
-        print("NOTIFICATION CLICKED. Action: \(response.actionIdentifier) UserInfo: \(userInfo)")
-        #endif
+        AppLogger.log("NOTIFICATION CLICKED. Action: \(response.actionIdentifier) UserInfo: \(userInfo)")
         
         if response.actionIdentifier == "RETRY_ACTION" {
             if let repo = userInfo["repoFullName"] as? String,
                let runId = userInfo["runId"] as? Int {
-                #if DEBUG
-                print("Retry matched for \(repo) ID: \(runId)")
-                #endif
+                AppLogger.log("Retry matched for \(repo) ID: \(runId)")
                 Task {
                     do {
                         try await GitHubClient.shared.retryFailedWorkflow(forRepo: repo, runId: runId)
-                        #if DEBUG
-                        print("Retry dispatched securely.")
-                        #endif
+                        AppLogger.log("Retry dispatched securely.")
                     } catch {
-                        #if DEBUG
-                        print("Retry dispatch failed: \(error)")
-                        #endif
+                        AppLogger.log("Retry dispatch failed: \(error)")
                     }
                 }
             } else {
-                #if DEBUG
-                print("Retrieval failure: Invalid UserInfo dictionary casting")
-                #endif
+                AppLogger.log("Retrieval failure: Invalid UserInfo dictionary casting")
             }
         } else if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
             if let htmlUrlStr = userInfo["htmlUrl"] as? String,
