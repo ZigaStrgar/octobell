@@ -1,0 +1,67 @@
+name: ✨ Feature Request
+description: Suggest a new idea or improvement for OctoBell.
+title: "[Feature]: "
+labels: ["enhancement"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea that would make OctoBell better? We'd love to hear it!
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight checklist
+      options:
+        - label: I have searched existing issues and this feature has not been requested before.
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or motivation
+      description: Is your feature request related to a problem? Describe it clearly. What pain point does this address?
+      placeholder: "Example: I have to open GitHub in my browser every time I want to see which branch triggered a run."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the feature you'd like to see. Be as specific as possible.
+      placeholder: "Example: Show the commit SHA and committer avatar alongside each workflow run row."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Have you thought about other ways to solve the problem? Why is your proposal the best approach?
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Feature area
+      description: Which part of OctoBell does this relate to?
+      options:
+        - Menu bar / status icon
+        - Runs tab (workflow list)
+        - Repos tab (repository management)
+        - Profile tab / settings
+        - Notifications
+        - Authentication
+        - Polling / refresh logic
+        - Accessibility
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Mockups, links, or any other information that helps explain the request.

@@ -1,0 +1,23 @@
+name: OctoBell
+options:
+  bundleIdPrefix: com.zigastrgar.octobell
+  minimumXcodeGenVersion: 2.18.0
+targets:
+  OctoBell:
+    type: application
+    platform: macOS
+    deploymentTarget: "14.0"
+    settings:
+      ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+      CURRENT_PROJECT_VERSION: "1"
+    sources:
+      - path: Sources
+    info:
+      path: Info.plist
+      properties:
+        LSUIElement: true
+        NSPrincipalClass: NSApplication
+        CFBundleShortVersionString: "0.0.0"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleIconName: AppIcon
+        CFBundleIconFile: AppIcon
