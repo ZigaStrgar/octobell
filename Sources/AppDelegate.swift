@@ -7,7 +7,6 @@ import Combine
 class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
     var statusItem: NSStatusItem!
     var popover: NSPopover!
-    var progressIndicator: NSProgressIndicator?
     
     let workflowManager = WorkflowManager()
     private var cancellables = Set<AnyCancellable>()
@@ -57,19 +56,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
             button.image = icon
             button.action = #selector(togglePopover(_:))
             button.target = self
-            
-            let indicator = NSProgressIndicator()
-            indicator.style = .spinning
-            indicator.controlSize = .small
-            indicator.isDisplayedWhenStopped = false
-            indicator.translatesAutoresizingMaskIntoConstraints = false
-            button.addSubview(indicator)
-            
-            NSLayoutConstraint.activate([
-                indicator.centerXAnchor.constraint(equalTo: button.centerXAnchor),
-                indicator.centerYAnchor.constraint(equalTo: button.centerYAnchor)
-            ])
-            self.progressIndicator = indicator
         }
         
         // Observe workflow changes to update icon and trigger notifications
@@ -110,17 +96,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         // Update menu bar icon
         if let button = statusItem.button {
             if workflowManager.lastError != nil {
-                progressIndicator?.stopAnimation(nil)
                 button.image = NSImage(systemSymbolName: "exclamationmark.triangle.fill", accessibilityDescription: "Auth Error")
                 button.image?.isTemplate = false
-            } else if !currentlyRunning.isEmpty {
-                button.image = NSImage(size: NSSize(width: 18, height: 18))
-                progressIndicator?.startAnimation(nil)
             } else {
-                progressIndicator?.stopAnimation(nil)
                 let icon = NSImage(named: "Octobell_Icon_Black")
                 icon?.size = NSSize(width: 18, height: 18)
-                icon?.accessibilityDescription = "Idle"
+                icon?.accessibilityDescription = !currentlyRunning.isEmpty ? "Running" : "Idle"
                 icon?.isTemplate = true
                 button.image = icon
             }
