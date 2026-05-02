@@ -23,7 +23,7 @@ public struct AppLogger {
             print(formatted)
             #endif
             
-            logger.debug("\(formatted, privacy: .public)")
+            logger.notice("\(formatted, privacy: .public)")
         }
     }
 }
