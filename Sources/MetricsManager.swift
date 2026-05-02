@@ -74,9 +74,7 @@ class MetricsManager: ObservableObject {
         recentRuns = recentRuns.filter { $0.value >= sevenDaysAgo }
         
         if recentRuns.count < beforeCount {
-            #if DEBUG
-            print("Pruned \(beforeCount - recentRuns.count) records from MetricsManager")
-            #endif
+            AppLogger.log("Pruned \(beforeCount - recentRuns.count) records from MetricsManager")
         }
     }
 }

@@ -174,9 +174,7 @@ struct WorkflowRow: View {
                             try await GitHubClient.shared.retryFailedWorkflow(forRepo: workflow.repository.fullName, runId: workflow.id)
                             hiddenActionStatus = workflow.status
                         } catch {
-                            #if DEBUG
-                            print("RETRY FAILED")
-                            #endif
+                            AppLogger.log("RETRY FAILED")
                         }
                     }
                 }) {
@@ -204,9 +202,7 @@ struct WorkflowRow: View {
                             try await GitHubClient.shared.cancelWorkflow(forRepo: workflow.repository.fullName, runId: workflow.id)
                             hiddenActionStatus = workflow.status
                         } catch {
-                            #if DEBUG
-                            print("CANCEL FAILED")
-                            #endif
+                            AppLogger.log("CANCEL FAILED")
                         }
                     }
                 }) {
@@ -468,12 +464,12 @@ struct ContentView: View {
                                 Text("Waiting...")
                             }
                             Spacer()
-                            #if DEBUG
-                            if let lastRefresh = workflowManager.lastRefreshedAt {
-                                let nextCycle = lastRefresh.addingTimeInterval(workflowManager.hasActiveWorkflows ? 20 : TimeInterval(SettingsManager.shared.refreshIntervalMinutes * 60))
-                                Text("Next poll: \(nextCycle, style: .time)")
+                            if UserDefaults.standard.bool(forKey: "Core_DeveloperMode") {
+                                if let lastRefresh = workflowManager.lastRefreshedAt {
+                                    let nextCycle = lastRefresh.addingTimeInterval(workflowManager.hasActiveWorkflows ? 20 : TimeInterval(SettingsManager.shared.refreshIntervalMinutes * 60))
+                                    Text("Next poll: \(nextCycle, style: .time)")
+                                }
                             }
-                            #endif
                         }
                         .font(.caption2)
                         .foregroundColor(AppTheme.onSurfaceVariant)

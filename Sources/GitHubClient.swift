@@ -88,20 +88,14 @@ class GitHubClient {
         var installations: [GHInstallation] = []
         
         do {
-            #if DEBUG
-            print("fetching installations: \(installationsReq.url?.absoluteString ?? "")")
-            #endif
+            AppLogger.log("fetching installations: \(installationsReq.url?.absoluteString ?? "")")
             let (data, response) = try await performRequest(installationsReq)
             if let http = response as? HTTPURLResponse, http.statusCode >= 400 {
-                #if DEBUG
-                print("API ERROR [fetchInstallations]: \(http.statusCode) - \(String(data: data, encoding: .utf8) ?? "")")
-                #endif
+                AppLogger.log("API ERROR [fetchInstallations]: \(http.statusCode) - \(String(data: data, encoding: .utf8) ?? "")")
             }
             installations = try JSONDecoder().decode(GHInstallationResponse.self, from: data).installations
         } catch {
-            #if DEBUG
-            print("DECODE/NETWORK ERROR [fetchInstallations]: \(error)")
-            #endif
+            AppLogger.log("DECODE/NETWORK ERROR [fetchInstallations]: \(error)")
             throw APIError.networkError(error)
         }
         
@@ -111,21 +105,15 @@ class GitHubClient {
         for installation in installations {
             let reposReq = try makeRequest(endpoint: "/user/installations/\(installation.id)/repositories", queryItems: [URLQueryItem(name: "per_page", value: "100")], ignoreCache: ignoreCache)
             do {
-                #if DEBUG
-                print("fetching repos for installation \(installation.id)")
-                #endif
+                AppLogger.log("fetching repos for installation \(installation.id)")
                 let (data, response) = try await performRequest(reposReq)
                 if let http = response as? HTTPURLResponse, http.statusCode >= 400 {
-                    #if DEBUG
-                    print("API ERROR [fetchinstallationRepositories]: \(http.statusCode)")
-                    #endif
+                    AppLogger.log("API ERROR [fetchinstallationRepositories]: \(http.statusCode)")
                 }
                 let payload = try JSONDecoder().decode(GHInstallationRepositoriesResponse.self, from: data)
                 allAccessibleRepos.append(contentsOf: payload.repositories)
             } catch {
-                #if DEBUG
-                print("DECODE/NETWORK ERROR [fetchInstallationRepos]: \(error)")
-                #endif
+                AppLogger.log("DECODE/NETWORK ERROR [fetchInstallationRepos]: \(error)")
                 // Continue to other installations
             }
         }
@@ -147,15 +135,11 @@ class GitHubClient {
             
             let request = try makeRequest(endpoint: "/repos/\(ownerRepo)/actions/runs", queryItems: query, ignoreCache: ignoreCache)
             
-            #if DEBUG
-            print("fetching workflows for \(ownerRepo) [Page \(page)]: \(request.url?.absoluteString ?? "")")
-            #endif
+            AppLogger.log("fetching workflows for \(ownerRepo) [Page \(page)]: \(request.url?.absoluteString ?? "")")
             let (data, response) = try await performRequest(request)
             
             if let http = response as? HTTPURLResponse, http.statusCode >= 400 {
-                #if DEBUG
-                print("API ERROR [fetchWorkflowRuns]: \(http.statusCode) - \(String(data: data, encoding: .utf8) ?? "")")
-                #endif
+                AppLogger.log("API ERROR [fetchWorkflowRuns]: \(http.statusCode) - \(String(data: data, encoding: .utf8) ?? "")")
                 break
             }
             
@@ -195,14 +179,10 @@ class GitHubClient {
         let (data, response) = try await performRequest(request)
         if let http = response as? HTTPURLResponse, http.statusCode >= 400 {
             let errorBody = String(data: data, encoding: .utf8) ?? "unknown"
-            #if DEBUG
-            print("RETRY API ERROR [\(http.statusCode)]: \(errorBody)")
-            #endif
+            AppLogger.log("RETRY API ERROR [\(http.statusCode)]: \(errorBody)")
             throw APIError.networkError(NSError(domain: "GitHubClient", code: http.statusCode, userInfo: [NSLocalizedDescriptionKey: errorBody]))
         }
-        #if DEBUG
-        print("RETRY API SUCCESS [\(ownerRepo) / \(runId)]")
-        #endif
+        AppLogger.log("RETRY API SUCCESS [\(ownerRepo) / \(runId)]")
     }
     
 
@@ -216,14 +196,10 @@ class GitHubClient {
         let (data, response) = try await performRequest(request)
         if let http = response as? HTTPURLResponse, http.statusCode >= 400 {
             let errorBody = String(data: data, encoding: .utf8) ?? "unknown"
-            #if DEBUG
-            print("CANCEL API ERROR [\(http.statusCode)]: \(errorBody)")
-            #endif
+            AppLogger.log("CANCEL API ERROR [\(http.statusCode)]: \(errorBody)")
             throw APIError.networkError(NSError(domain: "GitHubClient", code: http.statusCode, userInfo: [NSLocalizedDescriptionKey: errorBody]))
         }
-        #if DEBUG
-        print("CANCEL API SUCCESS [\(ownerRepo) / \(runId)]")
-        #endif
+        AppLogger.log("CANCEL API SUCCESS [\(ownerRepo) / \(runId)]")
     }
     
 
@@ -233,21 +209,15 @@ class GitHubClient {
         let request = try makeRequest(endpoint: "/user", ignoreCache: ignoreCache)
         
         do {
-            #if DEBUG
-            print("fetching user: \(request.url?.absoluteString ?? "")")
-            #endif
+            AppLogger.log("fetching user: \(request.url?.absoluteString ?? "")")
             let (data, response) = try await performRequest(request)
             if let http = response as? HTTPURLResponse, http.statusCode >= 400 {
-                #if DEBUG
-                print("API ERROR [fetchCurrentUser]: \(http.statusCode) - \(String(data: data, encoding: .utf8) ?? "")")
-                #endif
+                AppLogger.log("API ERROR [fetchCurrentUser]: \(http.statusCode) - \(String(data: data, encoding: .utf8) ?? "")")
             }
             let actor = try JSONDecoder().decode(GHActor.self, from: data)
             return actor
         } catch {
-            #if DEBUG
-            print("DECODE/NETWORK ERROR [fetchCurrentUser]: \(error)")
-            #endif
+            AppLogger.log("DECODE/NETWORK ERROR [fetchCurrentUser]: \(error)")
             throw APIError.networkError(error)
         }
     }

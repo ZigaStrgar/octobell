@@ -27,9 +27,7 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
             let granted = try await center.requestAuthorization(options: [.alert, .sound])
             self.isAuthorized = granted
         } catch {
-            #if DEBUG
-            print("Failed to request notification permission: \(error)")
-            #endif
+            AppLogger.log("Failed to request notification permission: \(error)")
         }
     }
     
@@ -81,9 +79,7 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                #if DEBUG
-                print("Failed to dispatch local notification: \(error)")
-                #endif
+                AppLogger.log("Failed to dispatch local notification: \(error)")
             }
         }
     }
