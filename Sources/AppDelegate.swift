@@ -25,7 +25,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     }
     
     private var unseenCount: Int = 0
-    private var hasUnseenFailure: Bool = false
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         let center = UNUserNotificationCenter.current()
@@ -127,15 +126,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         if popover.isShown {
             markAllCompletedAsSeen(workflows)
             unseenCount = 0
-            hasUnseenFailure = false
         } else {
             let unseenWorkflows = workflows.filter { run in
                 run.status == "completed" && !seenWorkflowRunAttempts.contains("\(run.id)-\(run.runAttempt)")
             }
             unseenCount = unseenWorkflows.count
-            hasUnseenFailure = unseenWorkflows.contains { run in
-                run.conclusion == "failure" || run.conclusion == "startup_failure" || run.conclusion == "timed_out" || run.conclusion == "cancelled"
-            }
         }
         
         previouslyRunning = currentlyRunning
@@ -159,20 +154,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
             button.image = icon
             
             if unseenCount > 0 {
-                let text = " \(unseenCount)"
-                if hasUnseenFailure {
-                    let attrs: [NSAttributedString.Key: Any] = [
-                        .foregroundColor: NSColor.systemRed,
-                        .font: NSFont.menuBarFont(ofSize: 0)
-                    ]
-                    button.attributedTitle = NSAttributedString(string: text, attributes: attrs)
-                } else {
-                    button.attributedTitle = NSAttributedString(string: "")
-                    button.title = text
-                }
+                button.title = " \(unseenCount)"
             } else {
                 button.title = ""
-                button.attributedTitle = NSAttributedString(string: "")
             }
         }
     }
@@ -264,7 +248,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
             } else {
                 markAllCompletedAsSeen(workflowManager.workflows)
                 unseenCount = 0
-                hasUnseenFailure = false
                 updateMenuBarIcon(currentlyRunning: previouslyRunning)
                 
                 popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
