@@ -64,21 +64,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
                 self?.handleWorkflowUpdates(workflows)
             }
             .store(in: &cancellables)
-            
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(applicationDidResignActive),
-            name: NSApplication.didResignActiveNotification,
-            object: nil
-        )
     }
-    
-    @objc internal func applicationDidResignActive(_ notification: Notification) {
-        if popover?.isShown == true {
-            popover?.performClose(nil)
-        }
-    }
-    
+
     private func handleWorkflowUpdates(_ workflows: [GHWorkflowRun]) {
         let currentlyRunning = Set(workflows.filter { $0.isRunning }.map { $0.id })
         
