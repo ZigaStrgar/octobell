@@ -1,6 +1,7 @@
 import Foundation
 import UserNotifications
 import Combine
+import AppKit
 
 @MainActor
 class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
@@ -74,6 +75,7 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
         content.subtitle = workflow.repository.fullName
         content.body = "Run '\(workflow.name)' \(conclusionText)."
         content.sound = .default
+        content.userInfo = ["url": workflow.htmlUrl]
         
         let request = UNNotificationRequest(identifier: "workflow-\(workflow.id)-\(workflow.updatedAt)", content: content, trigger: nil)
         
@@ -88,5 +90,12 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         return [.banner, .sound]
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        let userInfo = response.notification.request.content.userInfo
+        if let urlString = userInfo["url"] as? String, let url = URL(string: urlString) {
+            NSWorkspace.shared.open(url)
+        }
     }
 }
