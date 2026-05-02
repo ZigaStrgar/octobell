@@ -1,6 +1,6 @@
 cask "octobell" do
   version "0.3.0" # x-release-please-version
-  sha256 "77c04c6a95b6ad20384cf688f44d4f00571ce7f63099f816b967bd04990c4dd4"
+  sha256 "b59afd8f01357732c9b694a5d5568e1d0dcd8483d15950ebbadfab58379d67b8"
 
   url "https://github.com/zigastrgar/octobell/releases/download/v#{version}/OctoBell-#{version}.dmg"
   name "OctoBell"
