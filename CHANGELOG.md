@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.2](https://github.com/ZigaStrgar/octobell/compare/v0.0.1...v0.0.2) (2026-05-02)
+
+
+### Bug Fixes
+
+* apple development profile ([#19](https://github.com/ZigaStrgar/octobell/issues/19)) ([694aaa8](https://github.com/ZigaStrgar/octobell/commit/694aaa830f18d23037048b45a34097e8a4d2175c))
+
 ## 0.0.1 (2026-05-02)
 
 
