@@ -17,7 +17,7 @@ targets:
       properties:
         LSUIElement: true
         NSPrincipalClass: NSApplication
-        CFBundleShortVersionString: "0.0.0"
+        CFBundleShortVersionString: "0.0.0" # x-release-please-version
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleIconName: AppIcon
         CFBundleIconFile: AppIcon
