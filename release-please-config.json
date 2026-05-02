@@ -7,8 +7,7 @@
       "release-type": "simple",
       "extra-files": [
         "project.yml",
-        "Info.plist",
-        "Casks/octobell.rb"
+        "Info.plist"
       ]
     }
   }

@@ -160,10 +160,11 @@ jobs:
           VERSION="${{ steps.version.outputs.VERSION }}"
           SHA256="$DMG_SHA256"
 
-          # Update the version and SHA256 directly in the checked-out repo
+          # Update the version and SHA256 in the Homebrew cask.
+          # This is centralized here because SHA256 is only known after the build.
           CASK_FILE="Casks/octobell.rb"
           sed -i '' "s/version \".*\"/version \"${VERSION}\"/" "$CASK_FILE"
-          sed -i '' "s/sha256 .*/sha256 \"${SHA256}\"/" "$CASK_FILE"
+          sed -i '' "s/sha256 \".*\"/sha256 \"${SHA256}\"/" "$CASK_FILE"
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
