@@ -21,24 +21,28 @@ extension Color {
 }
 
 struct AppTheme {
-    static let primary = Color(hex: "#005bc1")
-    static let primaryContainer = Color(hex: "#d8e2ff")
-    static let blue = Color(hex: "#003889")
-    static let secondary = Color(hex: "#006e2c")
-    static let secondaryContainer = Color(hex: "#88fb99")
-    static let tertiary = Color(hex: "#7e5800")
-    static let tertiaryContainer = Color(hex: "#f5b63c")
-    static let error = Color(hex: "#9f403d")
-    static let errorContainer = Color(hex: "#fe8983")
-    
-    static let surface = Color(hex: "#faf9fe")
-    static let onSurface = Color(hex: "#2e323d")
-    static let onSurfaceVariant = Color(hex: "#5b5f6b")
-    static let surfaceContainerLow = Color(hex: "#f3f3fa")
-    static let surfaceContainerLowest = Color(hex: "#ffffff")
-    static let surfaceContainerHigh = Color(hex: "#e6e8f4")
-    static let surfaceContainerHighest = Color(hex: "#dfe2f0")
-    static let outlineVariant = Color(hex: "#aeb1bf")
+    private static var isDark: Bool {
+        NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+    }
+
+    static var primary: Color          { isDark ? Color(hex: "#adc6ff") : Color(hex: "#005bc1") }
+    static var primaryContainer: Color { isDark ? Color(hex: "#003580") : Color(hex: "#d8e2ff") }
+    static var blue: Color             { isDark ? Color(hex: "#b0c6ff") : Color(hex: "#003889") }
+    static var secondary: Color        { isDark ? Color(hex: "#6cdf80") : Color(hex: "#006e2c") }
+    static var secondaryContainer: Color { isDark ? Color(hex: "#005321") : Color(hex: "#88fb99") }
+    static var tertiary: Color         { isDark ? Color(hex: "#f5c96a") : Color(hex: "#7e5800") }
+    static var tertiaryContainer: Color { isDark ? Color(hex: "#5c4000") : Color(hex: "#f5b63c") }
+    static var error: Color            { isDark ? Color(hex: "#ffb4ab") : Color(hex: "#9f403d") }
+    static var errorContainer: Color   { isDark ? Color(hex: "#7a2e2b") : Color(hex: "#fe8983") }
+
+    static var surface: Color                { isDark ? Color(hex: "#131318") : Color(hex: "#faf9fe") }
+    static var onSurface: Color              { isDark ? Color(hex: "#e3e2ea") : Color(hex: "#2e323d") }
+    static var onSurfaceVariant: Color       { isDark ? Color(hex: "#c5c6d0") : Color(hex: "#5b5f6b") }
+    static var surfaceContainerLow: Color    { isDark ? Color(hex: "#1d1d23") : Color(hex: "#f3f3fa") }
+    static var surfaceContainerLowest: Color { isDark ? Color(hex: "#0e0e13") : Color(hex: "#ffffff") }
+    static var surfaceContainerHigh: Color   { isDark ? Color(hex: "#33333b") : Color(hex: "#e6e8f4") }
+    static var surfaceContainerHighest: Color { isDark ? Color(hex: "#3e3e46") : Color(hex: "#dfe2f0") }
+    static var outlineVariant: Color         { isDark ? Color(hex: "#46464f") : Color(hex: "#aeb1bf") }
 }
 
 struct VisualEffectView: NSViewRepresentable {
@@ -338,13 +342,12 @@ enum AppTab {
 struct ContentView: View {
     @StateObject private var authManager = AuthManager()
     @EnvironmentObject var workflowManager: WorkflowManager
+    @Environment(\.colorScheme) private var colorScheme
     @State private var searchText = ""
     @State private var expandedRepos: Set<String> = []
     @State private var selectedTab: AppTab = .runs
     @State private var isHoveringRefresh = false
     @State private var isHoveringLogout = false
-    
-
 
     var body: some View {
         Group {
@@ -361,14 +364,15 @@ struct ContentView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 18, height: 18)
+                                    .foregroundColor(AppTheme.blue)
                                     .accessibilityLabel("OctoBell Logo")
                                     .accessibilityAddTraits(.isImage)
                                 HStack(spacing: 0) {
                                     Text("Octo")
-                                        .font(.system(size: 20, weight: .bold, design: .default))
+                                        .font(.system(size: 20, weight: .regular, design: .default))
                                         .foregroundColor(AppTheme.onSurface)
                                     Text("Bell")
-                                        .font(.system(size: 20, weight: .regular, design: .default))
+                                        .font(.system(size: 20, weight: .semibold, design: .default))
                                         .foregroundColor(AppTheme.blue)
                                 }
                                 .accessibilityElement(children: .combine)
@@ -584,6 +588,7 @@ struct ContentView: View {
                 .background(AppTheme.surface)
             }
         }
+        .id(colorScheme)
         .onAppear {
             if authManager.state == .authenticated {
                 workflowManager.startPolling()
