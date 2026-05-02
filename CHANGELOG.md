@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.4.0](https://github.com/ZigaStrgar/octobell/compare/v0.3.0...v0.4.0) (2026-05-02)
+
+
+### Features
+
+* better support for dark theme ([#39](https://github.com/ZigaStrgar/octobell/issues/39)) ([51efdf1](https://github.com/ZigaStrgar/octobell/commit/51efdf1969563e6bdacd0c6341880f54f70ff758))
+
+
+### Bug Fixes
+
+* use os.Logger for Console.app visibility ([#41](https://github.com/ZigaStrgar/octobell/issues/41)) ([6bde99e](https://github.com/ZigaStrgar/octobell/commit/6bde99ea5958114cb6eb7bbd68a72e80093fd319))
+
 ## [0.3.0](https://github.com/ZigaStrgar/octobell/compare/v0.2.0...v0.3.0) (2026-05-02)
 
 
