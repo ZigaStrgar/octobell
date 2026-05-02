@@ -11,6 +11,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     let workflowManager = WorkflowManager()
     private var cancellables = Set<AnyCancellable>()
     private var previouslyRunning: Set<Int> = []
+    private var unseenCount: Int = 0
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         let center = UNUserNotificationCenter.current()
@@ -91,19 +92,33 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
             }
         }
         
+        if !completed.isEmpty {
+            unseenCount += completed.count
+        }
+        
         previouslyRunning = currentlyRunning
         
-        // Update menu bar icon
-        if let button = statusItem.button {
-            if workflowManager.lastError != nil {
-                button.image = NSImage(systemSymbolName: "exclamationmark.triangle.fill", accessibilityDescription: "Auth Error")
-                button.image?.isTemplate = false
+        updateMenuBarIcon(currentlyRunning: currentlyRunning)
+    }
+    
+    private func updateMenuBarIcon(currentlyRunning: Set<Int>) {
+        guard let button = statusItem.button else { return }
+        
+        if workflowManager.lastError != nil {
+            button.image = NSImage(systemSymbolName: "exclamationmark.triangle.fill", accessibilityDescription: "Auth Error")
+            button.image?.isTemplate = false
+            button.title = ""
+        } else {
+            let icon = NSImage(named: "Octobell_Icon_Black")
+            icon?.size = NSSize(width: 18, height: 18)
+            icon?.accessibilityDescription = !currentlyRunning.isEmpty ? "Running" : "Idle"
+            icon?.isTemplate = true
+            button.image = icon
+            
+            if unseenCount > 0 {
+                button.title = " \(unseenCount)"
             } else {
-                let icon = NSImage(named: "Octobell_Icon_Black")
-                icon?.size = NSSize(width: 18, height: 18)
-                icon?.accessibilityDescription = !currentlyRunning.isEmpty ? "Running" : "Idle"
-                icon?.isTemplate = true
-                button.image = icon
+                button.title = ""
             }
         }
     }
@@ -193,6 +208,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
             if popover.isShown {
                 popover.performClose(sender)
             } else {
+                unseenCount = 0
+                updateMenuBarIcon(currentlyRunning: previouslyRunning)
+                
                 popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
                 NSApp.activate(ignoringOtherApps: true)
                 popover.contentViewController?.view.window?.makeKey()
