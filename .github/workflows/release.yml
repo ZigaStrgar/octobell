@@ -65,7 +65,7 @@ jobs:
             -archivePath "$RUNNER_TEMP/$APP_NAME.xcarchive" \
             -destination "generic/platform=macOS" \
             CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="Apple Development" \
+            CODE_SIGN_IDENTITY="Developer ID Application" \
             DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}" \
             MARKETING_VERSION="${{ steps.version.outputs.VERSION }}" \
             CURRENT_PROJECT_VERSION="${{ github.run_number }}"
@@ -84,7 +84,7 @@ jobs:
             <key>signingStyle</key>
             <string>manual</string>
             <key>signingCertificate</key>
-            <string>Apple Development</string>
+            <string>Developer ID Application</string>
           </dict>
           </plist>
           EOF
