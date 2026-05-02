@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.0](https://github.com/ZigaStrgar/octobell/compare/v0.0.4...v0.1.0) (2026-05-02)
+
+
+### Features
+
+* open workflow on notification click ([#27](https://github.com/ZigaStrgar/octobell/issues/27)) ([#31](https://github.com/ZigaStrgar/octobell/issues/31)) ([568e2af](https://github.com/ZigaStrgar/octobell/commit/568e2afd49c770e6862a4c2e87148950dd8a4bb8))
+
+
+### Bug Fixes
+
+* 29: Remove spinning loader from menubar during ongoing runs ([#30](https://github.com/ZigaStrgar/octobell/issues/30)) ([9380fc2](https://github.com/ZigaStrgar/octobell/commit/9380fc280683d63af962074070ceefa07668aab0))
+
 ## [0.0.4](https://github.com/ZigaStrgar/octobell/compare/v0.0.3...v0.0.4) (2026-05-02)
 
 
