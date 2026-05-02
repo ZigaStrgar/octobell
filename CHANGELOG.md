@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/ZigaStrgar/octobell/compare/v0.1.0...v0.2.0) (2026-05-02)
+
+
+### Features
+
+* show number of unread notifications in menu bar ([#33](https://github.com/ZigaStrgar/octobell/issues/33)) ([2c59e16](https://github.com/ZigaStrgar/octobell/commit/2c59e16c56a1b77d17ae24721562cc325ae3ea24))
+
 ## [0.1.0](https://github.com/ZigaStrgar/octobell/compare/v0.0.4...v0.1.0) (2026-05-02)
 
 
