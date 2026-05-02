@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="Sources/Assets.xcassets/AppIcon.appiconset/Icon-512.png" alt="OctoBell" width="96" />
+  <img src="Sources/Assets.xcassets/AppIcon.appiconset/mac_256_2x.png" alt="OctoBell" width="96" />
   <h1>OctoBell</h1>
   <p>A lightweight macOS menu bar app for monitoring your GitHub Actions workflow runs — in real time.</p>
 

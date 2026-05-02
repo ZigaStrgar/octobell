@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.4](https://github.com/ZigaStrgar/octobell/compare/v0.0.3...v0.0.4) (2026-05-02)
+
+
+### Bug Fixes
+
+* runtime hardening ([#25](https://github.com/ZigaStrgar/octobell/issues/25)) ([6463581](https://github.com/ZigaStrgar/octobell/commit/6463581756f4eefb62c043e5db3acd61e65e9826))
+
+## [0.0.3](https://github.com/ZigaStrgar/octobell/compare/v0.0.2...v0.0.3) (2026-05-02)
+
+
+### Bug Fixes
+
+* logo ([#23](https://github.com/ZigaStrgar/octobell/issues/23)) ([0f0083d](https://github.com/ZigaStrgar/octobell/commit/0f0083d236aadc423edc80e130737b85061b7ca5))
+
 ## [0.0.2](https://github.com/ZigaStrgar/octobell/compare/v0.0.1...v0.0.2) (2026-05-02)
 
 
