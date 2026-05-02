@@ -6,6 +6,12 @@ struct ProfileTabView: View {
     @ObservedObject private var settings = SettingsManager.shared
     @ObservedObject private var notifications = NotificationManager.shared
     var onLogout: () -> Void
+    
+    private var appVersion: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "0.0.0"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "0"
+        return "Version: \(version) (\(build))"
+    }
 
     var body: some View {
         ScrollView {
@@ -226,7 +232,12 @@ struct ProfileTabView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
 
-                Spacer(minLength: 20)
+                Text(appVersion)
+                    .font(.system(size: 11))
+                    .foregroundColor(AppTheme.onSurfaceVariant)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 4)
+                    .padding(.bottom, 20)
             }
         }
     }
