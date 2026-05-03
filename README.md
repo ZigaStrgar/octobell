@@ -102,6 +102,20 @@ OctoBell uses the **GitHub Device Flow** — no passwords, no personal access to
 
 The token is stored securely in the macOS Keychain under `com.zigastrgar.octobell`.
 
+## Setup & Repository Access
+
+OctoBell needs explicit permission to access the repositories you want to monitor. If you see a "No Repository Access" screen after signing in, follow these steps:
+
+1.  Go to the [OctoBell GitHub App page](https://github.com/apps/octobell).
+2.  Click on **Configure** (or **Install** if you haven't yet).
+3.  Select the account or organization where you want to use OctoBell.
+4.  Under **Repository access**, choose either:
+    - **All repositories**: Grants OctoBell access to every repository in that account.
+    - **Only select repositories**: Choose specific repositories you want to monitor.
+5.  Click **Save**.
+
+Once permissions are updated, OctoBell will automatically detect the new repositories during the next refresh cycle, or you can trigger a manual refresh with `⌘R`.
+
 ## Project Structure
 
 ```
@@ -126,6 +140,14 @@ Sources/
 ## Contributing
 
 Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. For new features or bug reports, open an issue using one of the provided templates.
+
+## Privacy & Security
+
+OctoBell is designed with privacy and security in mind:
+
+- **Minimal Data Access**: OctoBell only fetches metadata about your workflow runs (status, name, branch, etc.). It **never** reads workflow logs, source code, or any other sensitive content.
+- **Strict Permissions**: OctoBell only interacts with repositories you have explicitly granted it access to. It cannot see or access any other repositories in your GitHub account.
+- **Local Storage**: Your GitHub authorization token is stored securely in the macOS Keychain. No data is ever sent to third-party servers; all communication happens directly between your machine and the GitHub API.
 
 ## License
 

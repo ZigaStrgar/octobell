@@ -440,12 +440,20 @@ struct ContentView: View {
                         // Main Content Area
                         switch selectedTab {
                         case .runs:
-                            RunsTabView(
-                                searchText: $searchText,
-                                expandedRepos: $expandedRepos
-                            )
+                            if workflowManager.allRepositories.isEmpty && !workflowManager.isRefreshing && (workflowManager.lastRefreshedAt != nil || workflowManager.lastError != nil) {
+                                NoAccessView(error: workflowManager.lastError)
+                            } else {
+                                RunsTabView(
+                                    searchText: $searchText,
+                                    expandedRepos: $expandedRepos
+                                )
+                            }
                         case .repos:
-                            ReposTabView()
+                            if workflowManager.allRepositories.isEmpty && !workflowManager.isRefreshing && (workflowManager.lastRefreshedAt != nil || workflowManager.lastError != nil) {
+                                NoAccessView(error: workflowManager.lastError)
+                            } else {
+                                ReposTabView()
+                            }
                         case .profile:
                             ProfileTabView {
                                 authManager.logout()
