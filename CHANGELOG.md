@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/ZigaStrgar/octobell/compare/v0.4.0...v0.5.0) (2026-05-03)
+
+
+### Features
+
+* add No Access screen and update documentation ([#42](https://github.com/ZigaStrgar/octobell/issues/42)) ([02cbb6f](https://github.com/ZigaStrgar/octobell/commit/02cbb6fa5ed114077c9d5f6b7b171a164a6c7345))
+
 ## [0.4.0](https://github.com/ZigaStrgar/octobell/compare/v0.3.0...v0.4.0) (2026-05-02)
 
 
