@@ -62,7 +62,7 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
         
         if isSuccess && !settings.notifyOnSuccess { return }
         if isFailure && !settings.notifyOnFailure { return }
-        if !isSuccess && !isFailure { return } 
+        if !isSuccess && !isFailure { return }
         
         let content = UNMutableNotificationContent()
         
@@ -73,7 +73,16 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
         content.subtitle = workflow.repository.fullName
         content.body = "Run '\(workflow.name)' \(conclusionText)."
         content.sound = .default
-        content.userInfo = ["url": workflow.htmlUrl]
+        
+        content.userInfo = [
+            "htmlUrl": workflow.htmlUrl,
+            "runId": workflow.id,
+            "repoFullName": workflow.repository.fullName
+        ]
+        
+        if isFailure {
+            content.categoryIdentifier = "FAILED_RUN"
+        }
         
         let request = UNNotificationRequest(identifier: "workflow-\(workflow.id)-\(workflow.updatedAt)", content: content, trigger: nil)
         
@@ -90,8 +99,28 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let userInfo = response.notification.request.content.userInfo
-        if let urlString = userInfo["url"] as? String, let url = URL(string: urlString) {
-            NSWorkspace.shared.open(url)
+        AppLogger.log("NOTIFICATION CLICKED (NotificationManager). Action: \(response.actionIdentifier) UserInfo: \(userInfo)")
+        
+        if response.actionIdentifier == "RETRY_ACTION" {
+            if let repo = userInfo["repoFullName"] as? String,
+               let runId = userInfo["runId"] as? Int {
+                AppLogger.log("Retry matched for \(repo) ID: \(runId)")
+                Task {
+                    do {
+                        try await GitHubClient.shared.retryFailedWorkflow(forRepo: repo, runId: runId)
+                        AppLogger.log("Retry dispatched securely.")
+                    } catch {
+                        AppLogger.log("Retry dispatch failed: \(error)")
+                    }
+                }
+            } else {
+                AppLogger.log("Retrieval failure: Invalid UserInfo dictionary casting")
+            }
+        } else if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
+            if let urlString = (userInfo["htmlUrl"] as? String) ?? (userInfo["url"] as? String),
+               let url = URL(string: urlString) {
+                NSWorkspace.shared.open(url)
+            }
         }
     }
 }
