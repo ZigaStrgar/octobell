@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/ZigaStrgar/octobell/compare/v0.5.0...v0.5.1) (2026-05-16)
+
+
+### Bug Fixes
+
+* sometimes notification are not actionable ([#44](https://github.com/ZigaStrgar/octobell/issues/44)) ([456992c](https://github.com/ZigaStrgar/octobell/commit/456992c3cd6a9bb039ade01f642100996edf8acf))
+
 ## [0.5.0](https://github.com/ZigaStrgar/octobell/compare/v0.4.0...v0.5.0) (2026-05-03)
 
 
