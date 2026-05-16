@@ -167,7 +167,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
                 AppLogger.log("Retrieval failure: Invalid UserInfo dictionary casting")
             }
         } else if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
-            if let htmlUrlStr = userInfo["htmlUrl"] as? String,
+            if let htmlUrlStr = (userInfo["htmlUrl"] as? String) ?? (userInfo["url"] as? String),
                let url = URL(string: htmlUrlStr) {
                 DispatchQueue.main.async {
                     NSWorkspace.shared.open(url)
@@ -193,4 +193,3 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         }
     }
 }
-
