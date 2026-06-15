@@ -8,7 +8,7 @@ cask "octobell" do
   homepage "https://github.com/zigastrgar/octobell"
 
   # The app is signed with an Apple Developer ID and notarized
-  depends_on macos: ">= :sonoma"
+  depends_on macos: :sonoma
 
   app "OctoBell.app"
 
