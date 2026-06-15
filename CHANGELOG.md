@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/ZigaStrgar/octobell/compare/v0.5.1...v0.5.2) (2026-06-15)
+
+
+### Bug Fixes
+
+* cask warning ([#46](https://github.com/ZigaStrgar/octobell/issues/46)) ([e397a39](https://github.com/ZigaStrgar/octobell/commit/e397a397f08a569e232e5a80992e84ee797c2669))
+
 ## [0.5.1](https://github.com/ZigaStrgar/octobell/compare/v0.5.0...v0.5.1) (2026-05-16)
 
 
