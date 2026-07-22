@@ -46,13 +46,8 @@ When a run completes, OctoBell sends you a native macOS notification. If it fail
 OctoBell is distributed as a Homebrew cask directly from this repository. The app is signed with an Apple Developer ID and notarized by Apple.
 
 ```bash
-brew install --cask zigastrgar/octobell/octobell
-```
-
-Or if you prefer to add the tap first:
-
-```bash
 brew tap zigastrgar/octobell https://github.com/zigastrgar/octobell
+brew trust --cask zigastrgar/octobell/octobell
 brew install --cask octobell
 ```
 
