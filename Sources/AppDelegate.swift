@@ -4,7 +4,7 @@ import UserNotifications
 import Combine
 
 @MainActor
-class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem!
     var popover: NSPopover!
     
@@ -14,23 +14,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     private var unseenCount: Int = 0
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        let center = UNUserNotificationCenter.current()
-        center.delegate = self
+        NotificationManager.shared.setupNotificationCenter()
         
-        let retryAction = UNNotificationAction(identifier: "RETRY_ACTION",
-                                               title: "Retry Run",
-                                               options: [])
-        
-        let failedCategory = UNNotificationCategory(identifier: "FAILED_RUN",
-                                                    actions: [retryAction],
-                                                    intentIdentifiers: [],
-                                                    options: [])
-        
-        center.setNotificationCategories([failedCategory])
-        
-        // Request notification permissions
-        center.requestAuthorization(options: [.alert, .sound]) { granted, _ in
-            AppLogger.log("Notifications granted: \(granted)")
+        Task {
+            await NotificationManager.shared.requestPermissions()
         }
         
         // 1. Create the popover
@@ -57,7 +44,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
             button.target = self
         }
         
-        // Observe workflow changes to update icon and trigger notifications
+        // Observe workflow changes to update icon and badge count
         workflowManager.$workflows
             .receive(on: RunLoop.main)
             .sink { [weak self] workflows in
@@ -69,14 +56,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     private func handleWorkflowUpdates(_ workflows: [GHWorkflowRun]) {
         let currentlyRunning = Set(workflows.filter { $0.isRunning }.map { $0.id })
         
-        // Check for completed workflows
+        // Check for completed workflows to increment unseen badge count
         let completed = previouslyRunning.subtracting(currentlyRunning)
-        for id in completed {
-            if let run = workflows.first(where: { $0.id == id }) {
-                triggerNotification(for: run)
-            }
-        }
-        
         if !completed.isEmpty {
             unseenCount += completed.count
         }
@@ -106,76 +87,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
                 button.title = ""
             }
         }
-    }
-    
-    private func formattedStatus(_ statusStr: String) -> String {
-        switch statusStr.lowercased() {
-        case "success": return "succeeded"
-        case "failure": return "failed"
-        case "timed_out": return "timed out"
-        case "cancelled": return "was cancelled"
-        case "action_required": return "requires action"
-        case "skipped": return "was skipped"
-        case "startup_failure": return "failed at startup"
-        default: return statusStr.replacingOccurrences(of: "_", with: " ")
-        }
-    }
-    
-    private func triggerNotification(for run: GHWorkflowRun) {
-        let content = UNMutableNotificationContent()
-        let success = run.conclusion == "success"
-        let statusStr = run.conclusion ?? run.status
-        let pastStatus = formattedStatus(statusStr)
-        
-        content.title = "Run \(run.name) \(pastStatus)"
-        content.body = "On branch \(run.headBranch) • \(run.repository.name)"
-        content.sound = .default
-        
-        content.userInfo = [
-            "htmlUrl": run.htmlUrl,
-            "runId": run.id,
-            "repoFullName": run.repository.fullName
-        ]
-        
-        if !success && statusStr == "failure" {
-            content.categoryIdentifier = "FAILED_RUN"
-        }
-        
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-        UNUserNotificationCenter.current().add(request)
-    }
-    
-    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                            didReceive response: UNNotificationResponse,
-                                            withCompletionHandler completionHandler: @escaping () -> Void) {
-        let userInfo = response.notification.request.content.userInfo
-        AppLogger.log("NOTIFICATION CLICKED. Action: \(response.actionIdentifier) UserInfo: \(userInfo)")
-        
-        if response.actionIdentifier == "RETRY_ACTION" {
-            if let repo = userInfo["repoFullName"] as? String,
-               let runId = userInfo["runId"] as? Int {
-                AppLogger.log("Retry matched for \(repo) ID: \(runId)")
-                Task {
-                    do {
-                        try await GitHubClient.shared.retryFailedWorkflow(forRepo: repo, runId: runId)
-                        AppLogger.log("Retry dispatched securely.")
-                    } catch {
-                        AppLogger.log("Retry dispatch failed: \(error)")
-                    }
-                }
-            } else {
-                AppLogger.log("Retrieval failure: Invalid UserInfo dictionary casting")
-            }
-        } else if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
-            if let htmlUrlStr = (userInfo["htmlUrl"] as? String) ?? (userInfo["url"] as? String),
-               let url = URL(string: htmlUrlStr) {
-                DispatchQueue.main.async {
-                    NSWorkspace.shared.open(url)
-                }
-            }
-        }
-        
-        completionHandler()
     }
     
     @objc func togglePopover(_ sender: AnyObject?) {
