@@ -96,6 +96,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             } else {
                 unseenCount = 0
                 updateMenuBarIcon(currentlyRunning: previouslyRunning)
+                SettingsManager.shared.refreshLaunchAtLoginStatus()
                 
                 popover.show(relativeTo: button.bounds, of: button, preferredEdge: NSRectEdge.minY)
                 NSApp.activate(ignoringOtherApps: true)
