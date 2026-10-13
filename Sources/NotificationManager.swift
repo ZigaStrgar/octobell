@@ -11,13 +11,26 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
     
     private override init() {
         super.init()
+        setupNotificationCenter()
+    }
+    
+    func setupNotificationCenter() {
         let center = UNUserNotificationCenter.current()
         center.delegate = self
         
-        DispatchQueue.main.async {
-            Task {
-                await self.updateAuthorizationStatus()
-            }
+        let retryAction = UNNotificationAction(identifier: "RETRY_ACTION",
+                                               title: "Retry Run",
+                                               options: [])
+        
+        let failedCategory = UNNotificationCategory(identifier: "FAILED_RUN",
+                                                    actions: [retryAction],
+                                                    intentIdentifiers: [],
+                                                    options: [])
+        
+        center.setNotificationCategories([failedCategory])
+        
+        Task {
+            await self.updateAuthorizationStatus()
         }
     }
     
@@ -26,6 +39,7 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
         do {
             let granted = try await center.requestAuthorization(options: [.alert, .sound])
             self.isAuthorized = granted
+            AppLogger.log("Notifications granted: \(granted)")
         } catch {
             AppLogger.log("Failed to request notification permission: \(error)")
         }
@@ -71,7 +85,7 @@ class NotificationManager: NSObject, ObservableObject, UNUserNotificationCenterD
         
         content.title = "\(icon) Run \(conclusionText.capitalized)"
         content.subtitle = workflow.repository.fullName
-        content.body = "Run '\(workflow.name)' \(conclusionText)."
+        content.body = "On branch \(workflow.headBranch) • '\(workflow.name)' \(conclusionText)."
         content.sound = .default
         
         content.userInfo = [
