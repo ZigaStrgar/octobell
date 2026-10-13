@@ -31,6 +31,10 @@ class SettingsManager: ObservableObject {
         didSet { UserDefaults.standard.set(isDebugLogsEnabled, forKey: "Core_DebugLogsEnabled") }
     }
     
+    @Published var showStatusIndicator: Bool {
+        didSet { UserDefaults.standard.set(showStatusIndicator, forKey: "Core_ShowStatusIndicator") }
+    }
+    
     @Published var isLaunchAtLoginEnabled: Bool = false
     @Published var launchAtLoginStatus: SMAppService.Status = .notRegistered
     
@@ -51,6 +55,12 @@ class SettingsManager: ObservableObject {
             self.notifyOnFailure = true
         } else {
             self.notifyOnFailure = UserDefaults.standard.bool(forKey: "Core_NotifyFailure")
+        }
+        
+        if UserDefaults.standard.object(forKey: "Core_ShowStatusIndicator") == nil {
+            self.showStatusIndicator = true
+        } else {
+            self.showStatusIndicator = UserDefaults.standard.bool(forKey: "Core_ShowStatusIndicator")
         }
         
         self.isDeveloperModeEnabled = UserDefaults.standard.bool(forKey: "Core_DeveloperMode")

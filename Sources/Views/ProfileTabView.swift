@@ -191,6 +191,26 @@ struct ProfileTabView: View {
 
                         Divider()
 
+                        // Menu Bar Status Indicator
+                        HStack {
+                            Text("Menu Bar Status Indicator")
+                            Spacer()
+                            Toggle("", isOn: Binding(
+                                get: { settings.showStatusIndicator },
+                                set: { val in DispatchQueue.main.async { settings.showStatusIndicator = val } }
+                            ))
+                            .toggleStyle(.switch)
+                            .controlSize(.mini)
+                            .tint(AppTheme.primary)
+                            .accessibilityLabel("Menu Bar Status Indicator")
+                            .onHover { hovering in
+                                if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                            }
+                        }
+                        .padding()
+
+                        Divider()
+
                         // Notifications disabled warning
                         if !notifications.isAuthorized {
                             HStack {
