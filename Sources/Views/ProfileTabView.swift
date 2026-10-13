@@ -1,4 +1,5 @@
 import SwiftUI
+import ServiceManagement
 
 struct ProfileTabView: View {
     @EnvironmentObject var workflowManager: WorkflowManager
@@ -148,6 +149,48 @@ struct ProfileTabView: View {
 
                         Divider()
 
+                        // Launch at Login approval warning
+                        if settings.launchAtLoginStatus == .requiresApproval {
+                            HStack {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundColor(AppTheme.error)
+                                Text("Launch at login requires approval")
+                                    .font(.caption)
+                                    .foregroundColor(AppTheme.onSurfaceVariant)
+                                Spacer()
+                                Button("Open Settings") {
+                                    settings.openSystemSettingsLoginItems()
+                                }
+                                .font(.caption)
+                                .buttonStyle(.borderedProminent)
+                                .onHover { hovering in
+                                    if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                                }
+                            }
+                            .padding()
+                            Divider()
+                        }
+
+                        // Start up on Login
+                        HStack {
+                            Text("Start up on Login")
+                            Spacer()
+                            Toggle("", isOn: Binding(
+                                get: { settings.isLaunchAtLoginEnabled },
+                                set: { val in DispatchQueue.main.async { settings.setLaunchAtLogin(enabled: val) } }
+                            ))
+                            .toggleStyle(.switch)
+                            .controlSize(.mini)
+                            .tint(AppTheme.primary)
+                            .accessibilityLabel("Start up on Login")
+                            .onHover { hovering in
+                                if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                            }
+                        }
+                        .padding()
+
+                        Divider()
+
                         // Notifications disabled warning
                         if !notifications.isAuthorized {
                             HStack {
@@ -281,5 +324,8 @@ struct ProfileTabView: View {
             .keyboardShortcut("d", modifiers: [.option])
             .hidden()
         )
+        .onAppear {
+            settings.refreshLaunchAtLoginStatus()
+        }
     }
 }

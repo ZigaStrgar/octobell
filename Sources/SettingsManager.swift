@@ -1,5 +1,7 @@
 import Foundation
 import Combine
+import AppKit
+import ServiceManagement
 
 @MainActor
 class SettingsManager: ObservableObject {
@@ -29,6 +31,9 @@ class SettingsManager: ObservableObject {
         didSet { UserDefaults.standard.set(isDebugLogsEnabled, forKey: "Core_DebugLogsEnabled") }
     }
     
+    @Published var isLaunchAtLoginEnabled: Bool = false
+    @Published var launchAtLoginStatus: SMAppService.Status = .notRegistered
+    
     private init() {
         let savedInterval = UserDefaults.standard.integer(forKey: "Core_RefreshIntervalMinutes")
         self.refreshIntervalMinutes = savedInterval == 0 ? 5 : savedInterval
@@ -50,5 +55,53 @@ class SettingsManager: ObservableObject {
         
         self.isDeveloperModeEnabled = UserDefaults.standard.bool(forKey: "Core_DeveloperMode")
         self.isDebugLogsEnabled = UserDefaults.standard.bool(forKey: "Core_DebugLogsEnabled")
+        
+        refreshLaunchAtLoginStatus()
+        
+        NotificationCenter.default.addObserver(
+            forName: NSApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.refreshLaunchAtLoginStatus()
+            }
+        }
+    }
+    
+    func refreshLaunchAtLoginStatus() {
+        let status = SMAppService.mainApp.status
+        self.launchAtLoginStatus = status
+        self.isLaunchAtLoginEnabled = (status == .enabled)
+    }
+    
+    func setLaunchAtLogin(enabled: Bool) {
+        do {
+            if enabled {
+                if SMAppService.mainApp.status == .enabled {
+                    refreshLaunchAtLoginStatus()
+                    return
+                }
+                try SMAppService.mainApp.register()
+                AppLogger.log("Successfully registered launch at login")
+            } else {
+                if SMAppService.mainApp.status == .notRegistered {
+                    refreshLaunchAtLoginStatus()
+                    return
+                }
+                try SMAppService.mainApp.unregister()
+                AppLogger.log("Successfully unregistered launch at login")
+            }
+        } catch {
+            AppLogger.log("Failed to \(enabled ? "register" : "unregister") launch at login: \(error.localizedDescription)")
+            if SMAppService.mainApp.status == .requiresApproval {
+                SMAppService.openSystemSettingsLoginItems()
+            }
+        }
+        refreshLaunchAtLoginStatus()
+    }
+    
+    func openSystemSettingsLoginItems() {
+        SMAppService.openSystemSettingsLoginItems()
     }
 }
