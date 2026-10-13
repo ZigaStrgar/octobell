@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0](https://github.com/ZigaStrgar/octobell/compare/v0.5.2...v0.6.0) (2026-10-13)
+
+
+### Features
+
+* implement dynamic menu bar icon and state indicators ([#52](https://github.com/ZigaStrgar/octobell/issues/52)) ([f04308e](https://github.com/ZigaStrgar/octobell/commit/f04308ed93f58a367b6dd0fc60e40446af43b961))
+* implement start up on login ([#50](https://github.com/ZigaStrgar/octobell/issues/50)) ([597f768](https://github.com/ZigaStrgar/octobell/commit/597f768a60b83001dbac240e4257336b49ae8507))
+
+
+### Bug Fixes
+
+* resolve notification handling inconsistency between AppDelegate and NotificationManager ([#49](https://github.com/ZigaStrgar/octobell/issues/49)) ([0b23002](https://github.com/ZigaStrgar/octobell/commit/0b23002a7a5a498e5a8799cd8c1977eb0784c845))
+
 ## [0.5.2](https://github.com/ZigaStrgar/octobell/compare/v0.5.1...v0.5.2) (2026-06-15)
 
 
